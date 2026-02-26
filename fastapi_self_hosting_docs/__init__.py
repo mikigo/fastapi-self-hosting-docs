@@ -1,6 +1,6 @@
 import os
 
-from fastapi import FastAPI as _FastAPI
+from fastapi import FastAPI
 from fastapi.openapi.docs import (
     get_redoc_html,
     get_swagger_ui_html,
@@ -9,11 +9,15 @@ from fastapi.openapi.docs import (
 from fastapi.staticfiles import StaticFiles
 
 
-def FastAPI(title="FastAPI Self Hosting Docs", **kwargs) -> _FastAPI:
-    del kwargs["docs_url"]
-    del kwargs["redoc_url"]
-    app = _FastAPI(title=title, docs_url=None, redoc_url=None, **kwargs)
+def mount(app: FastAPI, favicon_url:str=None):
+    if app.docs_url is not None:
+        raise ValueError
+    if app.redoc_url is not None:
+        raise ValueError
+    
     static_dir_name = "fastapi-self-hosting-docs-static"
+    if favicon_url is None:
+        favicon_url = f"/{static_dir_name}/favicon.png"
     app.mount(
         f"/{static_dir_name}",
         StaticFiles(
@@ -34,7 +38,7 @@ def FastAPI(title="FastAPI Self Hosting Docs", **kwargs) -> _FastAPI:
             oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
             swagger_js_url=f"/{static_dir_name}/swagger-ui-bundle.js",
             swagger_css_url=f"/{static_dir_name}/swagger-ui.css",
-            swagger_favicon_url=f"/{static_dir_name}/favicon.png",
+            swagger_favicon_url=favicon_url,
         )
 
     @app.get(app.swagger_ui_oauth2_redirect_url, include_in_schema=False)
@@ -47,7 +51,5 @@ def FastAPI(title="FastAPI Self Hosting Docs", **kwargs) -> _FastAPI:
             openapi_url=app.openapi_url,
             title=app.title + " - ReDoc",
             redoc_js_url=f"/{static_dir_name}/redoc.standalone.js",
-            redoc_favicon_url=f"/{static_dir_name}/favicon.png",
+            redoc_favicon_url=favicon_url,
         )
-
-    return app

@@ -21,14 +21,18 @@ pip install fastapi-self-hosting-docs
 ### 基本用法
 
 ```python
-# 使用 FastAPI Self Hosting Docs 替代标准 FastAPI
+import uvicorn
+from fastapi import FastAPI
+import fastapi_self_hosting_docs
 
-# from fastapi import FastAPI
-from fastapi_self_hosting_docs import FastAPI
-app = FastAPI()
+app = FastAPI(
+    docs_url=None,
+    redoc_url=None
+)
+
+fastapi_self_hosting_docs.mount(app)
 
 # 启动应用
-import uvicorn
 uvicorn.run(app)
 ```
 **Swagger UI**
