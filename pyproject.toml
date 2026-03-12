@@ -1,6 +1,6 @@
 [project]
 name = "fastapi-self-hosting-docs"
-description = ""
+description = "A self-hosted documentation solution for FastAPI applications with local Swagger UI and ReDoc."
 authors = [
     { name = "mikigo", email = "mikigo@foxmail.com" },
 ]
